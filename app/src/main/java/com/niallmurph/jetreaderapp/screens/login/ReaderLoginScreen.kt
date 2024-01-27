@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -21,6 +22,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.niallmurph.jetreaderapp.components.EmailInputTextField
 import com.niallmurph.jetreaderapp.components.ReaderLogo
 
 @Composable
@@ -35,7 +37,7 @@ fun LoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.Top
         ){
             ReaderLogo()
-
+            UserForm()
         }
     }
 
@@ -62,6 +64,12 @@ fun UserForm(){
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        EmailInputTextField(
+            emailState = email,
+            enabled = true,
+            onAction = KeyboardActions{
+                passwordFocusRequest.requestFocus()
+            }
+        )
     }
 }
