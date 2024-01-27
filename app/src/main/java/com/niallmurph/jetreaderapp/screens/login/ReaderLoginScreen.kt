@@ -1,5 +1,6 @@
 package com.niallmurph.jetreaderapp.screens.login
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.navigation.NavController
 import com.niallmurph.jetreaderapp.components.EmailInputTextField
 import com.niallmurph.jetreaderapp.components.PasswordInputTextField
 import com.niallmurph.jetreaderapp.components.ReaderLogo
+import com.niallmurph.jetreaderapp.components.SubmitButton
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -43,7 +45,7 @@ fun LoginScreen(navController: NavController) {
                 loading = false,
                 isCreateAccount = false
             ) { email, pwd ->
-
+                Log.d("FORM", "ReaderLoginScreen: $email $pwd")
             }
         }
     }
@@ -93,5 +95,13 @@ fun UserForm(
                 onDone(email.value.trim(), password.value.trim())
             }
         )
+
+        SubmitButton(
+            textId = if(isCreateAccount) "Create Account" else "Login",
+            loading = loading,
+            validInputs = isValid,
+        ) {
+            onDone(email.value.trim(), password.value.trim())
+        }
     }
 }
