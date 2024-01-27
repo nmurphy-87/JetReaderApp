@@ -17,7 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.firebase.firestore.FirebaseFirestore
 import com.niallmurph.jetreaderapp.navigation.ReaderNavigation
 import com.niallmurph.jetreaderapp.ui.theme.JetReaderAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
