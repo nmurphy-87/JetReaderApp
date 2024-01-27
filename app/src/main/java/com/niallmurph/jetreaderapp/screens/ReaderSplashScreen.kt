@@ -18,6 +18,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.niallmurph.jetreaderapp.components.ReaderLogo
+import com.niallmurph.jetreaderapp.components.ReaderTitleCaption
 import com.niallmurph.jetreaderapp.navigation.ReaderScreens
 import kotlinx.coroutines.delay
 
@@ -26,7 +28,7 @@ fun SplashScreen(navController: NavController) {
 
     val scale = remember { Animatable(0f) }
 
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         scale.animateTo(
             targetValue = 0.9f,
             animationSpec = tween(
@@ -59,17 +61,9 @@ fun SplashScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Jet Reader",
-                style = MaterialTheme.typography.h3,
-                color = Color.Red.copy(alpha = 0.5f)
-            )
+            ReaderLogo()
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "\"Read, Change Yourself \"",
-                style = MaterialTheme.typography.h5,
-                color = Color.Gray
-            )
+            ReaderTitleCaption()
         }
     }
 }
