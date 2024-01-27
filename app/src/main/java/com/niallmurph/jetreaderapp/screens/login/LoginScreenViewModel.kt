@@ -17,34 +17,53 @@ class LoginScreenViewModel : ViewModel() {
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
 
-    fun signInWithEmailAndPassword(email: String, password: String, navigateToHome : () -> Unit ) = viewModelScope.launch {
+    fun signInWithEmailAndPassword(email: String, password: String, navigateToHome: () -> Unit) =
+        viewModelScope.launch {
 
-        try {
-            auth.signInWithEmailAndPassword(email, password)
+            try {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Log.d(
+                                "LoginScreenViewModel",
+                                "Sign in successful : ${task.result.toString()}"
+                            )
+                            navigateToHome.invoke()
+                        } else {
+                            Log.d(
+                                "LoginScreenViewModel",
+                                "Sign in not successful : ${task.result.toString()}"
+                            )
+                        }
+                    }
+            } catch (e: Exception) {
+                Log.d(
+                    "LoginScreenViewModel",
+                    "Exception when attempting sign in : ${e.message}"
+                )
+            }
+        }
+
+    fun createUerWithEmailAndPassword(email: String, password: String, navigateToHome: () -> Unit) {
+        if (_loading.value == false) {
+            _loading.value = true
+            auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d(
                             "LoginScreenViewModel",
-                            "Sign in successful : ${task.result.toString()}"
+                            "Sign up successful :) : ${task.result.toString()}"
                         )
                         navigateToHome.invoke()
                     } else {
                         Log.d(
                             "LoginScreenViewModel",
-                            "Sign in not successful : ${task.result.toString()}"
+                            "Sign up not successful : ${task.result.toString()}"
                         )
                     }
+                    _loading.value = false
                 }
-        } catch (e: Exception) {
-            Log.d(
-                "LoginScreenViewModel",
-                "Exception when attempting sign in : ${e.message}"
-            )
         }
-    }
-
-    fun createUerWithEmailAndPassword(email: String, password: String) {
-
     }
 
 }

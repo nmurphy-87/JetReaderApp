@@ -72,7 +72,12 @@ fun LoginScreen(
                     isCreateAccount = true
                 ) { email, pwd ->
                     Log.d("SIGNUP FORM", "ReaderLoginScreen: $email $pwd")
-                    //TODO : Firebase Signup
+                    viewModel.createUerWithEmailAndPassword(
+                        email = email,
+                        password = pwd
+                    ){
+                        navController.navigate(route = ReaderScreens.HomeScreen.name)
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
