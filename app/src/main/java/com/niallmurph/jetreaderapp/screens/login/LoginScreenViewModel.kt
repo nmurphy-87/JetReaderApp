@@ -17,13 +17,17 @@ class LoginScreenViewModel : ViewModel() {
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
 
-    fun signInWithEmailAndPassword(email: String, password: String) = viewModelScope.launch {
+    fun signInWithEmailAndPassword(email: String, password: String, navigateToHome : () -> Unit ) = viewModelScope.launch {
 
         try {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-
+                        Log.d(
+                            "LoginScreenViewModel",
+                            "Sign in successful : ${task.result.toString()}"
+                        )
+                        navigateToHome.invoke()
                     } else {
                         Log.d(
                             "LoginScreenViewModel",
