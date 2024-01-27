@@ -18,11 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.niallmurph.jetreaderapp.components.EmailInputTextField
+import com.niallmurph.jetreaderapp.components.PasswordInputTextField
 import com.niallmurph.jetreaderapp.components.ReaderLogo
 
 @Composable
@@ -37,7 +39,12 @@ fun LoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.Top
         ){
             ReaderLogo()
-            UserForm()
+            UserForm(
+                loading = false,
+                isCreateAccount = false
+            ) { email, pwd ->
+
+            }
         }
     }
 
@@ -45,13 +52,17 @@ fun LoginScreen(navController: NavController) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun UserForm(){
+fun UserForm(
+    loading : Boolean = false,
+    isCreateAccount : Boolean = false,
+    onDone : (String, String) -> Unit = {email, pwd ->}
+){
     val email = rememberSaveable{ mutableStateOf("") }
     val password = rememberSaveable{ mutableStateOf("") }
     val passwordVisibility = rememberSaveable { mutableStateOf(false) }
     val passwordFocusRequest = FocusRequester.Default
     val keyboardController = LocalSoftwareKeyboardController.current
-    val isValis = remember(email.value, password.value) {
+    val isValid = remember(email.value, password.value) {
         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
     }
 
@@ -66,9 +77,20 @@ fun UserForm(){
     ) {
         EmailInputTextField(
             emailState = email,
-            enabled = true,
+            enabled = !loading,
             onAction = KeyboardActions{
                 passwordFocusRequest.requestFocus()
+            }
+        )
+        PasswordInputTextField(
+            modifier = Modifier
+                .focusRequester(passwordFocusRequest),
+            passwordState = password,
+            enabled = !loading,
+            passwordVisibility = passwordVisibility,
+            onAction = KeyboardActions {
+                if(!isValid) return@KeyboardActions
+                onDone(email.value.trim(), password.value.trim())
             }
         )
     }
