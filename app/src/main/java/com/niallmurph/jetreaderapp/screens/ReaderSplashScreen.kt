@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import com.niallmurph.jetreaderapp.components.ReaderLogo
 import com.niallmurph.jetreaderapp.components.ReaderTitleCaption
 import com.niallmurph.jetreaderapp.navigation.ReaderScreens
@@ -40,7 +41,12 @@ fun SplashScreen(navController: NavController) {
             )
         )
         delay(1500L)
-        navController.navigate(route = ReaderScreens.LoginScreen.name)
+        if(FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
+            navController.navigate(route = ReaderScreens.LoginScreen.name)
+        } else {
+            navController.navigate(route = ReaderScreens.HomeScreen.name)
+        }
+
     }
 
     Surface(
