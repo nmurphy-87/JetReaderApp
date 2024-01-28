@@ -1,6 +1,7 @@
 package com.niallmurph.jetreaderapp.screens.login
 
 import android.util.Log
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,9 +31,13 @@ import com.niallmurph.jetreaderapp.components.PasswordInputTextField
 import com.niallmurph.jetreaderapp.components.ReaderLogo
 import com.niallmurph.jetreaderapp.components.SubmitButton
 import com.niallmurph.jetreaderapp.R
+import com.niallmurph.jetreaderapp.navigation.ReaderScreens
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
 
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
@@ -54,6 +59,12 @@ fun LoginScreen(navController: NavController) {
                 ) { email, pwd ->
                     Log.d("LOGIN FORM", "ReaderLoginScreen: $email $pwd")
                     //TODO : Firebase Login
+                    viewModel.signInWithEmailAndPassword(
+                        email = email,
+                        password = pwd
+                    ){
+                        navController.navigate(route = ReaderScreens.HomeScreen.name)
+                    }
                 }
             } else {
                 UserForm(
@@ -61,7 +72,12 @@ fun LoginScreen(navController: NavController) {
                     isCreateAccount = true
                 ) { email, pwd ->
                     Log.d("SIGNUP FORM", "ReaderLoginScreen: $email $pwd")
-                    //TODO : Firebase Signup
+                    viewModel.createUerWithEmailAndPassword(
+                        email = email,
+                        password = pwd
+                    ){
+                        navController.navigate(route = ReaderScreens.HomeScreen.name)
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
