@@ -14,7 +14,7 @@ fun ReaderNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = ReaderScreens.SplashScreen.name
+        startDestination = ReaderScreens.HomeScreen.name
     ) {
         composable(ReaderScreens.SplashScreen.name){
             SplashScreen(navController = navController)
