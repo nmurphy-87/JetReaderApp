@@ -60,7 +60,7 @@ fun HomeContent(
             title = "The Silmarillion",
             authors = "J.R.R.Tolkein",
             notes = "Long but good"
-        ),MBook(
+        ), MBook(
             id = "1",
             title = "The Silmarillion",
             authors = "J.R.R.Tolkein",
