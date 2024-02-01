@@ -65,6 +65,22 @@ fun PasswordInputTextField(
 }
 
 @Composable
+fun SearchInputField(
+    modifier: Modifier = Modifier,
+    valueState: MutableState<String>,
+    labelId: String,
+    enabled: Boolean,
+    onAction: KeyboardActions = KeyboardActions.Default
+) {
+    InputField(
+        valueState = valueState,
+        labelId = labelId,
+        enabled = enabled,
+        onAction = onAction
+    )
+}
+
+@Composable
 private fun InputField(
     modifier: Modifier = Modifier,
     valueState: MutableState<String>,
