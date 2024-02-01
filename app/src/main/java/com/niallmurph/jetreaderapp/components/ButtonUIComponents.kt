@@ -1,17 +1,20 @@
 package com.niallmurph.jetreaderapp.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SubmitButton(
@@ -54,5 +57,42 @@ fun FABContent(onTap: () -> Unit) {
             contentDescription = "Add a book",
             tint = Color.White
         )
+    }
+}
+
+@Composable
+fun RoundedButton(
+    label : String = "Reading",
+    radius : Int = 26,
+    onPress : () -> Unit = {}
+){
+    Surface(
+        modifier = Modifier
+            .clip(
+                RoundedCornerShape(
+                    bottomEndPercent = radius,
+                    topStartPercent = radius
+                )
+            ),
+        color = Color(0xFF92CBDF)
+    ) {
+        Column(
+            modifier = Modifier
+                .width(96.dp)
+                .fillMaxHeight()
+                .clickable {
+                    onPress.invoke()
+                },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = label,
+                style = TextStyle(
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+            )
+        }
     }
 }
