@@ -87,7 +87,7 @@ fun ListCard(
                 }
             }
             Text(
-                text = "Book Title",
+                text = book.title.toString(),
                 modifier = Modifier
                     .padding(4.dp),
                 fontWeight = FontWeight.Bold,
@@ -95,7 +95,7 @@ fun ListCard(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "Authors",
+                text = book.authors.toString(),
                 modifier = Modifier
                     .padding(4.dp),
                 style = MaterialTheme.typography.caption

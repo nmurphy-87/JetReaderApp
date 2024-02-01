@@ -2,7 +2,9 @@ package com.niallmurph.jetreaderapp.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -49,6 +51,45 @@ fun HomeScreen(navController: NavHostController) {
 fun HomeContent(
     navController: NavController = NavController(LocalContext.current)
 ) {
+
+    val listOfBooks = listOf(
+        MBook(
+            id = "1",
+            title = "The Silmarillion",
+            authors = "J.R.R.Tolkein",
+            notes = "Long but good"
+        ),MBook(
+            id = "1",
+            title = "The Silmarillion",
+            authors = "J.R.R.Tolkein",
+            notes = "Long but good"
+        ),
+        MBook(
+            id = "1",
+            title = "The Silmarillion",
+            authors = "J.R.R.Tolkein",
+            notes = "Long but good"
+        ),
+        MBook(
+            id = "1",
+            title = "The Silmarillion",
+            authors = "J.R.R.Tolkein",
+            notes = "Long but good"
+        ),
+        MBook(
+            id = "1",
+            title = "The Silmarillion",
+            authors = "J.R.R.Tolkein",
+            notes = "Long but good"
+        ),
+        MBook(
+            id = "1",
+            title = "The Silmarillion",
+            authors = "J.R.R.Tolkein",
+            notes = "Long but good"
+        )
+    )
+
     val currentUser = if (!FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
         FirebaseAuth.getInstance().currentUser?.email?.split("@")?.get(0)
     } else {
@@ -89,7 +130,10 @@ fun HomeContent(
                 Divider()
             }
         }
-        ListCard()
+        ReadingRightNowArea(
+            books = listOfBooks,
+            navController = navController
+        )
     }
 }
 
@@ -97,6 +141,36 @@ fun HomeContent(
 fun ReadingRightNowArea(
     books: List<MBook>, navController: NavController
 ) {
+    ListCard(book = books[0])
+    TitleSection(label = "Reading List")
+    BookListArea(listOfBooks = books,navController = navController)
+}
 
+@Composable
+fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
+    HorizontalScrollableComponent(listOfBooks){
+        //TODO : Go to details on card clicked
+    }
+}
+
+@Composable
+fun HorizontalScrollableComponent(
+    listOfBooks: List<MBook>,
+    onCardPressed: (String) -> Unit
+) {
+    val scrollState = rememberScrollState()
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(280.dp)
+            .horizontalScroll(scrollState)
+    ){
+        for(book in listOfBooks){
+            ListCard(book) {
+                onCardPressed(it)
+            }
+        }
+    }
 }
 
