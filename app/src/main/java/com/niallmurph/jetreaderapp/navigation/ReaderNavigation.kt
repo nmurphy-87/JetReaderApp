@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.niallmurph.jetreaderapp.screens.SplashScreen
 import com.niallmurph.jetreaderapp.screens.home.HomeScreen
 import com.niallmurph.jetreaderapp.screens.login.LoginScreen
+import com.niallmurph.jetreaderapp.screens.stats.StatsScreen
 
 @Composable
 fun ReaderNavigation() {
@@ -24,6 +25,9 @@ fun ReaderNavigation() {
         }
         composable(ReaderScreens.HomeScreen.name){
             HomeScreen(navController = navController)
+        }
+        composable(ReaderScreens.StatsScreen.name){
+            StatsScreen(navController = navController)
         }
     }
 }
