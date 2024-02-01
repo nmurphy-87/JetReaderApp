@@ -32,7 +32,9 @@ fun HomeScreen(navController: NavHostController) {
             ReaderAppBar(title = "JetReader", navController = navController)
         },
         floatingActionButton = {
-            FABContent {}
+            FABContent {
+                navController.navigate(ReaderScreens.SearchScreen.name)
+            }
         }
     ) {
         Surface(
@@ -58,7 +60,7 @@ fun HomeContent(
             title = "The Silmarillion",
             authors = "J.R.R.Tolkein",
             notes = "Long but good"
-        ),MBook(
+        ), MBook(
             id = "1",
             title = "The Silmarillion",
             authors = "J.R.R.Tolkein",
