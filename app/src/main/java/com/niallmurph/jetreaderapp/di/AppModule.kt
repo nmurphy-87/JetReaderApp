@@ -1,6 +1,7 @@
 package com.niallmurph.jetreaderapp.di
 
 import com.niallmurph.jetreaderapp.network.BooksApi
+import com.niallmurph.jetreaderapp.repository.BookRepository
 import com.niallmurph.jetreaderapp.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -13,6 +14,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideBookRepository(api: BooksApi) = BookRepository(api)
 
     @Singleton
     @Provides
