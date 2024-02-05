@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,11 +30,12 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.niallmurph.jetreaderapp.components.ReaderAppBar
 import com.niallmurph.jetreaderapp.components.SearchInputField
+import com.niallmurph.jetreaderapp.models.Item
 import com.niallmurph.jetreaderapp.models.MBook
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = hiltViewModel()) {
+fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel) {
 
     Scaffold(
         topBar = {
@@ -56,50 +56,14 @@ fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = 
                 viewModel.searchBooks(query)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            BookList(navController = navController)
+            BookList(navController = navController, viewModel = viewModel)
         }
     }
 }
 
 @Composable
-fun BookList(navController: NavController) {
-    val list = listOf(
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ), MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        )
-    )
+fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
+    val list = viewModel.list
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -112,7 +76,7 @@ fun BookList(navController: NavController) {
 }
 
 @Composable
-fun BookRow(book: MBook, navController: NavController) {
+fun BookRow(book: Item, navController: NavController) {
     Card(
         modifier = Modifier
             .clickable { }
@@ -127,7 +91,7 @@ fun BookRow(book: MBook, navController: NavController) {
                 .padding(6.dp),
             verticalAlignment = Alignment.Top
         ){
-            val imageUrl = "https://www.westcountrybooks.co.uk/images/thumbs/025/0251085_9780261103573_550.jpeg"
+            val imageUrl = if(book.volumeInfo.imageLinks.smallThumbnail.isEmpty()) "https://minalsampat.com/wp-content/uploads/2019/12/book-placeholder.jpg" else book.volumeInfo.imageLinks.smallThumbnail.toString()
             Image(
                 painter = rememberImagePainter(data = imageUrl),
                 contentDescription = "Book cover image",
@@ -138,11 +102,11 @@ fun BookRow(book: MBook, navController: NavController) {
             )
             Column() {
                 Text(
-                    text = book.title.toString(),
+                    text = book.volumeInfo.title,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "Author : ${book.authors}",
+                    text = "Author : ${book.volumeInfo.authors}",
                     overflow = TextOverflow.Clip,
                     style = MaterialTheme.typography.caption
                 )
@@ -155,7 +119,6 @@ fun BookRow(book: MBook, navController: NavController) {
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
 fun SearchForm(
     modifier: Modifier = Modifier,
