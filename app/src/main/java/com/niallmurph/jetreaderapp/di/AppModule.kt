@@ -1,7 +1,10 @@
 package com.niallmurph.jetreaderapp.di
 
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.niallmurph.jetreaderapp.network.BooksApi
 import com.niallmurph.jetreaderapp.repository.BookRepository
+import com.niallmurph.jetreaderapp.repository.FireRepository
 import com.niallmurph.jetreaderapp.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -28,5 +31,9 @@ object AppModule {
             .build()
             .create(BooksApi::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideFireBookRepository() = FireRepository(queryBook = FirebaseFirestore.getInstance().collection("books"))
 
 }

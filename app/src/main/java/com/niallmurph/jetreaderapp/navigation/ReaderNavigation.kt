@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.niallmurph.jetreaderapp.screens.SplashScreen
 import com.niallmurph.jetreaderapp.screens.details.BookDetailsScreen
 import com.niallmurph.jetreaderapp.screens.home.HomeScreen
+import com.niallmurph.jetreaderapp.screens.home.HomeScreenViewModel
 import com.niallmurph.jetreaderapp.screens.login.LoginScreen
 import com.niallmurph.jetreaderapp.screens.search.BookSearchViewModel
 import com.niallmurph.jetreaderapp.screens.search.SearchScreen
@@ -21,7 +22,7 @@ fun ReaderNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = ReaderScreens.HomeScreen.name
+        startDestination = ReaderScreens.SplashScreen.name
     ) {
         composable(ReaderScreens.SplashScreen.name){
             SplashScreen(navController = navController)
@@ -30,7 +31,8 @@ fun ReaderNavigation() {
             LoginScreen(navController = navController)
         }
         composable(ReaderScreens.HomeScreen.name){
-            HomeScreen(navController = navController)
+            val homeViewModel= hiltViewModel<HomeScreenViewModel>()
+            HomeScreen(navController = navController,viewModel = homeViewModel)
         }
         composable(ReaderScreens.SearchScreen.name) {
             val viewModel = hiltViewModel<BookSearchViewModel>()

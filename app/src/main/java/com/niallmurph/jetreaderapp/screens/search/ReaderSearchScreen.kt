@@ -101,8 +101,11 @@ fun BookRow(book: Item, navController: NavController) {
                 .padding(6.dp),
             verticalAlignment = Alignment.Top
         ) {
-            val imageUrl =
-                if (book.volumeInfo.imageLinks.thumbnail.isEmpty()) "https://minalsampat.com/wp-content/uploads/2019/12/book-placeholder.jpg" else book.volumeInfo.imageLinks.thumbnail
+            val imageUrl: String = if(book.volumeInfo.imageLinks.smallThumbnail.isEmpty())
+                "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=80&q=80"
+            else {
+                book.volumeInfo.imageLinks.smallThumbnail
+            }
             Image(
                 painter = rememberImagePainter(data = imageUrl),
                 contentDescription = "Book cover image",
