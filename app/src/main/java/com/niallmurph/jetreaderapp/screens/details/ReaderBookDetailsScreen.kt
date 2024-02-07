@@ -21,10 +21,12 @@ import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.google.firebase.firestore.FirebaseFirestore
 import com.niallmurph.jetreaderapp.components.ReaderAppBar
 import com.niallmurph.jetreaderapp.components.RoundedButton
 import com.niallmurph.jetreaderapp.data.Resource
 import com.niallmurph.jetreaderapp.models.Item
+import com.niallmurph.jetreaderapp.models.MBook
 import com.niallmurph.jetreaderapp.navigation.ReaderScreens
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -143,7 +145,10 @@ fun ShowBookDetails(bookInfo : Resource<Item>, navController: NavController){
             RoundedButton(
                 label = "Save"
             ){
+                val book = MBook(
 
+                )
+                saveToFirebase(book)
             }
             RoundedButton(
                 label = "Cancel"
@@ -152,5 +157,9 @@ fun ShowBookDetails(bookInfo : Resource<Item>, navController: NavController){
             }
         }
     }
+
+}
+
+fun saveToFirebase(book: MBook) {
 
 }
