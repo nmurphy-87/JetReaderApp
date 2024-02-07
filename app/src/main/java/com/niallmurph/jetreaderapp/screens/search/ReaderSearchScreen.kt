@@ -27,6 +27,7 @@ import coil.compose.rememberImagePainter
 import com.niallmurph.jetreaderapp.components.ReaderAppBar
 import com.niallmurph.jetreaderapp.components.SearchInputField
 import com.niallmurph.jetreaderapp.models.Item
+import com.niallmurph.jetreaderapp.navigation.ReaderScreens
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -85,7 +86,9 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
 fun BookRow(book: Item, navController: NavController) {
     Card(
         modifier = Modifier
-            .clickable { }
+            .clickable {
+                navController.navigate(ReaderScreens.DetailsScreen.name + "/${book.id}")
+            }
             .fillMaxWidth()
             .height(120.dp)
             .padding(2.dp),
