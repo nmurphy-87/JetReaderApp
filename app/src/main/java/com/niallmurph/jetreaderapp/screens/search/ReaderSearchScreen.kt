@@ -1,16 +1,14 @@
 package com.niallmurph.jetreaderapp.screens.search
 
 import android.annotation.SuppressLint
+import android.graphics.fonts.FontStyle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -21,21 +19,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.niallmurph.jetreaderapp.components.ReaderAppBar
 import com.niallmurph.jetreaderapp.components.SearchInputField
-import com.niallmurph.jetreaderapp.models.MBook
+import com.niallmurph.jetreaderapp.models.Item
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = hiltViewModel()) {
+fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel) {
 
     Scaffold(
         topBar = {
@@ -56,63 +51,38 @@ fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = 
                 viewModel.searchBooks(query)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            BookList(navController = navController)
+            BookList(navController = navController, viewModel = viewModel)
         }
     }
 }
 
 @Composable
-fun BookList(navController: NavController) {
-    val list = listOf(
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ), MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        )
-    )
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(16.dp)
-    ){
-        items(items = list) {
-            BookRow(book = it, navController = navController)
+fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
+    val list = viewModel.list
+
+    if(viewModel.isLoading){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            LinearProgressIndicator()
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            items(items = list) {
+                BookRow(book = it, navController = navController)
+            }
         }
     }
 }
 
 @Composable
-fun BookRow(book: MBook, navController: NavController) {
+fun BookRow(book: Item, navController: NavController) {
     Card(
         modifier = Modifier
             .clickable { }
@@ -121,13 +91,14 @@ fun BookRow(book: MBook, navController: NavController) {
             .padding(2.dp),
         shape = RectangleShape,
         elevation = 6.dp
-    ){
+    ) {
         Row(
             modifier = Modifier
                 .padding(6.dp),
             verticalAlignment = Alignment.Top
-        ){
-            val imageUrl = "https://www.westcountrybooks.co.uk/images/thumbs/025/0251085_9780261103573_550.jpeg"
+        ) {
+            val imageUrl =
+                if (book.volumeInfo.imageLinks.thumbnail.isEmpty()) "https://minalsampat.com/wp-content/uploads/2019/12/book-placeholder.jpg" else book.volumeInfo.imageLinks.thumbnail
             Image(
                 painter = rememberImagePainter(data = imageUrl),
                 contentDescription = "Book cover image",
@@ -138,15 +109,27 @@ fun BookRow(book: MBook, navController: NavController) {
             )
             Column() {
                 Text(
-                    text = book.title.toString(),
+                    text = book.volumeInfo.title,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "Author : ${book.authors}",
+                    text = "Author : ${book.volumeInfo.authors}",
                     overflow = TextOverflow.Clip,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                     style = MaterialTheme.typography.caption
                 )
-                //TODO: ADD MORE FIELDS
+                Text(
+                    text = "Date : ${book.volumeInfo.publishedDate}",
+                    overflow = TextOverflow.Clip,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    style = MaterialTheme.typography.caption
+                )
+                Text(
+                    text = "Category : ${book.volumeInfo.categories}",
+                    overflow = TextOverflow.Clip,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    style = MaterialTheme.typography.caption
+                )
 
             }
         }
@@ -155,7 +138,6 @@ fun BookRow(book: MBook, navController: NavController) {
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
 fun SearchForm(
     modifier: Modifier = Modifier,
