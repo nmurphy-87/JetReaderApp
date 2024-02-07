@@ -135,7 +135,9 @@ fun ShowBookDetails(bookInfo : Resource<Item>, navController: NavController){
 
         Row(
             modifier = Modifier
-                .padding(8.dp),
+                .padding(16.dp)
+                .height(48.dp)
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ){
             RoundedButton(
