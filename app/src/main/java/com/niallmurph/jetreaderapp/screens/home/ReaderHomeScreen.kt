@@ -1,6 +1,7 @@
 package com.niallmurph.jetreaderapp.screens.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -17,16 +18,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.niallmurph.jetreaderapp.components.*
 import com.niallmurph.jetreaderapp.models.MBook
 import com.niallmurph.jetreaderapp.navigation.ReaderScreens
+import kotlinx.coroutines.runBlocking
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, viewModel: HomeScreenViewModel) {
     Scaffold(
         topBar = {
             ReaderAppBar(title = "JetReader", navController = navController)
@@ -42,57 +45,69 @@ fun HomeScreen(navController: NavHostController) {
                 .fillMaxSize()
         ) {
             HomeContent(
-                navController = navController
+                navController = navController,
+                viewModel = viewModel
             )
         }
     }
 }
 
-@Preview
 @Composable
 fun HomeContent(
-    navController: NavController = NavController(LocalContext.current)
+    navController: NavController = NavController(LocalContext.current),
+    viewModel: HomeScreenViewModel
 ) {
 
-    val listOfBooks = listOf(
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ), MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        ),
-        MBook(
-            id = "1",
-            title = "The Silmarillion",
-            authors = "J.R.R.Tolkein",
-            notes = "Long but good"
-        )
-    )
 
-    val currentUser = if (!FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
+    var listOfBooks = emptyList<MBook>()
+    val currentUser = FirebaseAuth.getInstance().currentUser
+
+    //Filtering books by current logged in user
+    if(!viewModel.data.value.data.isNullOrEmpty()){
+        Log.d("FIRE_SEARCH","HomeScreen - isNullOrEmpty? : {${viewModel.data.value.data.isNullOrEmpty().toString()}}")
+        listOfBooks = viewModel.data.value.data?.toList()!!.filter { mBook ->
+            mBook.userId == currentUser?.uid.toString()
+        }
+    }
+//    val listOfBooks = listOf(
+//        MBook(
+//            id = "1",
+//            title = "The Silmarillion",
+//            authors = "J.R.R.Tolkein",
+//            notes = "Long but good"
+//        ), MBook(
+//            id = "1",
+//            title = "The Silmarillion",
+//            authors = "J.R.R.Tolkein",
+//            notes = "Long but good"
+//        ),
+//        MBook(
+//            id = "1",
+//            title = "The Silmarillion",
+//            authors = "J.R.R.Tolkein",
+//            notes = "Long but good"
+//        ),
+//        MBook(
+//            id = "1",
+//            title = "The Silmarillion",
+//            authors = "J.R.R.Tolkein",
+//            notes = "Long but good"
+//        ),
+//        MBook(
+//            id = "1",
+//            title = "The Silmarillion",
+//            authors = "J.R.R.Tolkein",
+//            notes = "Long but good"
+//        ),
+//        MBook(
+//            id = "1",
+//            title = "The Silmarillion",
+//            authors = "J.R.R.Tolkein",
+//            notes = "Long but good"
+//        )
+//    )
+
+    val currentUserName = if (!FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
         FirebaseAuth.getInstance().currentUser?.email?.split("@")?.get(0)
     } else {
         "User"
@@ -120,7 +135,7 @@ fun HomeContent(
                     tint = MaterialTheme.colors.secondaryVariant
                 )
                 Text(
-                    text = currentUser!!,
+                    text = currentUserName!!,
                     modifier = Modifier
                         .padding(2.dp),
                     style = MaterialTheme.typography.overline,
@@ -143,7 +158,7 @@ fun HomeContent(
 fun ReadingRightNowArea(
     books: List<MBook>, navController: NavController
 ) {
-    ListCard(book = books[0])
+    BookListArea(listOfBooks = books,navController = navController)
     TitleSection(label = "Reading List")
     BookListArea(listOfBooks = books,navController = navController)
 }
