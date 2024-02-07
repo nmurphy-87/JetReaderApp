@@ -2,10 +2,13 @@ package com.niallmurph.jetreaderapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.niallmurph.jetreaderapp.screens.SplashScreen
+import com.niallmurph.jetreaderapp.screens.details.BookDetailsScreen
 import com.niallmurph.jetreaderapp.screens.home.HomeScreen
 import com.niallmurph.jetreaderapp.screens.login.LoginScreen
 import com.niallmurph.jetreaderapp.screens.search.BookSearchViewModel
@@ -35,6 +38,12 @@ fun ReaderNavigation() {
         }
         composable(ReaderScreens.StatsScreen.name){
             StatsScreen(navController = navController)
+        }
+        val detailName = ReaderScreens.DetailsScreen.name
+        composable("$detailName/{bookId}", arguments = listOf(navArgument("bookId"){
+            type = NavType.StringType
+        })){ backStack ->
+            backStack.arguments?.getString("bookId").let { id -> BookDetailsScreen(navController = navController, bookId = id.toString()) }
         }
     }
 }
