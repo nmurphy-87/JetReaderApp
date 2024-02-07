@@ -67,6 +67,7 @@ fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Text(text = "Loading ...")
             LinearProgressIndicator()
         }
     } else {
