@@ -81,6 +81,22 @@ fun SearchInputField(
 }
 
 @Composable
+fun NotesInputField(
+    modifier: Modifier = Modifier,
+    valueState: MutableState<String>,
+    labelId: String,
+    enabled: Boolean = true,
+    onAction: KeyboardActions
+){
+    InputField(
+        valueState = valueState,
+        labelId = labelId,
+        enabled = enabled,
+        onAction = onAction
+    )
+}
+
+@Composable
 private fun InputField(
     modifier: Modifier = Modifier,
     valueState: MutableState<String>,
