@@ -22,15 +22,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.niallmurph.jetreaderapp.models.MBook
 
-@Preview
 @Composable
 fun ListCard(
-    book: MBook = MBook(
-        id = "123",
-        title = "Lorem  Ipsum",
-        authors = "Me",
-        notes = "Lorem Ipsum etc etc..."
-    ),
+    book: MBook,
     onPressDetails: (String) -> Unit = {}
 ) {
     Card(
@@ -63,7 +57,7 @@ fun ListCard(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = rememberImagePainter(data = "https://m.media-amazon.com/images/I/71Gt0U59D3L._AC_UF894,1000_QL80_.jpg"),
+                    painter = rememberImagePainter(data = book.photoUrl.toString()),
                     contentDescription = "",
                     modifier = Modifier
                         .height(140.dp)

@@ -166,7 +166,7 @@ fun ReadingRightNowArea(
 @Composable
 fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
     HorizontalScrollableComponent(listOfBooks){
-        //TODO : Go to details on card clicked
+        navController.navigate(ReaderScreens.UpdateScreen.name+"/$it")
     }
 }
 
@@ -185,7 +185,7 @@ fun HorizontalScrollableComponent(
     ){
         for(book in listOfBooks){
             ListCard(book) {
-                onCardPressed(it)
+                onCardPressed(book.googleBookId.toString())
             }
         }
     }
