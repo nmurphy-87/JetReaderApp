@@ -1,7 +1,9 @@
 package com.niallmurph.jetreaderapp.screens.update
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,7 +42,10 @@ import com.niallmurph.jetreaderapp.components.ReaderAppBar
 import com.niallmurph.jetreaderapp.components.RoundedButton
 import com.niallmurph.jetreaderapp.data.DataOrException
 import com.niallmurph.jetreaderapp.models.MBook
+import com.niallmurph.jetreaderapp.navigation.ReaderScreens
 import com.niallmurph.jetreaderapp.screens.home.HomeScreenViewModel
+import com.niallmurph.jetreaderapp.utils.formateDate
+import com.niallmurph.jetreaderapp.utils.showToast
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "ProduceStateDoesNotAssignValue")
 @Composable
@@ -106,6 +112,8 @@ fun UpdateScreen(
 @Composable
 fun ShowSimpleForm(book: MBook, navController: NavController) {
 
+    val context = LocalContext.current
+
     val notesText = remember { mutableStateOf("") }
     val isStartedReading = remember { mutableStateOf(false) }
     val isFinishedReading = remember { mutableStateOf(false) }
@@ -141,7 +149,7 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
                     )
                 }
             } else {
-                Text("Started on : ${book.startedReading}") //TODO : Format date
+                Text("Started on : ${formateDate(book.startedReading!!)}")
             }
 
         }
@@ -164,7 +172,7 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
                     )
                 }
             } else {
-                Text("Finished on : ${book.finishedReading}") //TODO : Format date
+                Text("Finished on : ${formateDate(book.finishedReading!!)}")
             }
 
         }
@@ -211,7 +219,9 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
                     .document(book.id!!)
                     .update(bookToUpdate)
                     .addOnCompleteListener { task ->
+                        showToast(context, "Book Updated Successfully")
                         Log.d("UPDATE SCREEN", "Update Successful : ${task.result}")
+                        navController.navigate(ReaderScreens.HomeScreen.name)
                     }
                     .addOnFailureListener {
                         Log.w("UPDATE SCREEN", "Error updating document : ", it)
