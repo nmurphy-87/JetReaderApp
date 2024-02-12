@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -99,12 +100,68 @@ fun UpdateScreen(
 @Composable
 fun ShowSimpleForm(book: MBook, navController: NavController) {
 
-    val notesText = remember{ mutableStateOf("") }
+    val notesText = remember { mutableStateOf("") }
+    val isStartedReading = remember { mutableStateOf(false) }
+    val isFinishedReading = remember { mutableStateOf(false) }
 
     SimpleForm(
-        defaultValue = if (book.notes.toString().isNotEmpty()) book.notes.toString() else "No thoughts available"
-    ) {note ->
+        defaultValue = if (book.notes.toString()
+                .isNotEmpty()
+        ) book.notes.toString() else "No thoughts available"
+    ) { note ->
         notesText.value = note
+    }
+
+    Row(
+        modifier = Modifier
+            .padding(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        TextButton(
+            onClick = { isStartedReading.value = true },
+            enabled = book.startedReading == null
+        ) {
+            if (book.startedReading == null) {
+                if (!isStartedReading.value) {
+                    Text("Start Reading")
+                } else {
+                    Text(
+                        text = "Started Reading",
+                        modifier = Modifier
+                            .alpha(0.6f),
+                        color = Color.Red.copy(alpha = 0.5f)
+                    )
+                }
+            } else {
+                Text("Started on : ${book.startedReading}") //TODO : Format date
+            }
+
+        }
+
+        Spacer(modifier = Modifier.width(4.dp))
+
+        TextButton(
+            onClick = { isFinishedReading.value = true },
+            enabled = book.startedReading == null
+        ) {
+            if (book.finishedReading == null) {
+                if (!isFinishedReading.value) {
+                    Text("Mark as Read")
+                } else {
+                    Text(
+                        text = "Finished Reading",
+                        modifier = Modifier
+                            .alpha(0.6f),
+                        color = Color.Red.copy(alpha = 0.5f)
+                    )
+                }
+            } else {
+                Text("Finished on : ${book.finishedReading}") //TODO : Format date
+            }
+
+        }
+
     }
 }
 
