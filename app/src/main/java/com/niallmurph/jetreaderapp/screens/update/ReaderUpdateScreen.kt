@@ -30,9 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.niallmurph.jetreaderapp.components.NotesInputField
 import com.niallmurph.jetreaderapp.components.RatingBar
 import com.niallmurph.jetreaderapp.components.ReaderAppBar
+import com.niallmurph.jetreaderapp.components.RoundedButton
 import com.niallmurph.jetreaderapp.data.DataOrException
 import com.niallmurph.jetreaderapp.models.MBook
 import com.niallmurph.jetreaderapp.screens.home.HomeScreenViewModel
@@ -172,6 +176,51 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
         RatingBar(rating = it!!) {
             ratingVal.value = it
         }
+    }
+
+    Spacer(modifier = Modifier.padding(bottom = 12.dp))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+
+        val changedNotes = book.notes != notesText.value
+        val changedRating = book.rating?.toInt() != ratingVal.value
+        val isFinishedTimeStamp = if(isFinishedReading.value) Timestamp.now() else book.finishedReading
+        val isStartedTimeStamp = if(isStartedReading.value) Timestamp.now() else book.startedReading
+
+        val bookUpdate = changedNotes || changedRating || isStartedReading.value || isFinishedReading.value
+
+        val bookToUpdate = hashMapOf(
+            "finished_reading" to isFinishedTimeStamp,
+            "started_reading" to isStartedTimeStamp,
+            "rating" to ratingVal.value,
+            "notes" to notesText.value
+        ).toMap()
+
+        RoundedButton(
+            label = "Update"
+        ){
+            if(bookUpdate){
+                FirebaseFirestore
+                    .getInstance()
+                    .collection("books")
+                    .document(book.id!!)
+                    .update(bookToUpdate)
+                    .addOnCompleteListener { task ->
+                        Log.d("UPDATE SCREEN", "Update Successful : ${task.result}")
+                    }
+                    .addOnFailureListener {
+                        Log.w("UPDATE SCREEN", "Error updating document : ", it)
+                    }
+            }
+        }
+        RoundedButton(
+            label = "Delete"
+        )
     }
 }
 
