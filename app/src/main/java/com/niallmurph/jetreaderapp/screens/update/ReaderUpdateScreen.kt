@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.niallmurph.jetreaderapp.components.NotesInputField
+import com.niallmurph.jetreaderapp.components.RatingBar
 import com.niallmurph.jetreaderapp.components.ReaderAppBar
 import com.niallmurph.jetreaderapp.data.DataOrException
 import com.niallmurph.jetreaderapp.models.MBook
@@ -97,12 +98,14 @@ fun UpdateScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ShowSimpleForm(book: MBook, navController: NavController) {
 
     val notesText = remember { mutableStateOf("") }
     val isStartedReading = remember { mutableStateOf(false) }
     val isFinishedReading = remember { mutableStateOf(false) }
+    val ratingVal = remember { mutableStateOf(0) }
 
     SimpleForm(
         defaultValue = if (book.notes.toString()
@@ -162,6 +165,13 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
 
         }
 
+    }
+
+    Text(text = "Rating", modifier = Modifier.padding(bottom = 4.dp))
+    book.rating?.toInt().let {
+        RatingBar(rating = it!!) {
+            ratingVal.value = it
+        }
     }
 }
 
