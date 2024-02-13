@@ -79,7 +79,7 @@ fun ListCard(
                         modifier = Modifier
                             .padding(1.dp)
                     )
-                    BookRatingInset(score = 3.5)
+                    BookRatingInset(score = book.rating!!)
                 }
             }
             Text(
