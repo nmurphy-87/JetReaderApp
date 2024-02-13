@@ -15,17 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.niallmurph.jetreaderapp.components.*
 import com.niallmurph.jetreaderapp.models.MBook
 import com.niallmurph.jetreaderapp.navigation.ReaderScreens
-import kotlinx.coroutines.runBlocking
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -166,7 +163,7 @@ fun ReadingRightNowArea(
 @Composable
 fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
     HorizontalScrollableComponent(listOfBooks){
-        //TODO : Go to details on card clicked
+        navController.navigate(ReaderScreens.UpdateScreen.name+"/$it")
     }
 }
 
@@ -185,7 +182,7 @@ fun HorizontalScrollableComponent(
     ){
         for(book in listOfBooks){
             ListCard(book) {
-                onCardPressed(it)
+                onCardPressed(book.googleBookId.toString())
             }
         }
     }
