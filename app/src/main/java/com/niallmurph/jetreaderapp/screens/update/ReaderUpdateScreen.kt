@@ -14,10 +14,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -27,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -36,6 +34,7 @@ import coil.compose.rememberImagePainter
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.niallmurph.jetreaderapp.R
 import com.niallmurph.jetreaderapp.components.NotesInputField
 import com.niallmurph.jetreaderapp.components.RatingBar
 import com.niallmurph.jetreaderapp.components.ReaderAppBar
@@ -197,10 +196,13 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
 
         val changedNotes = book.notes != notesText.value
         val changedRating = book.rating?.toInt() != ratingVal.value
-        val isFinishedTimeStamp = if(isFinishedReading.value) Timestamp.now() else book.finishedReading
-        val isStartedTimeStamp = if(isStartedReading.value) Timestamp.now() else book.startedReading
+        val isFinishedTimeStamp =
+            if (isFinishedReading.value) Timestamp.now() else book.finishedReading
+        val isStartedTimeStamp =
+            if (isStartedReading.value) Timestamp.now() else book.startedReading
 
-        val bookUpdate = changedNotes || changedRating || isStartedReading.value || isFinishedReading.value
+        val bookUpdate =
+            changedNotes || changedRating || isStartedReading.value || isFinishedReading.value
 
         val bookToUpdate = hashMapOf(
             "finished_reading" to isFinishedTimeStamp,
@@ -211,8 +213,8 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
 
         RoundedButton(
             label = "Update"
-        ){
-            if(bookUpdate){
+        ) {
+            if (bookUpdate) {
                 FirebaseFirestore
                     .getInstance()
                     .collection("books")
@@ -228,11 +230,84 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
                     }
             }
         }
+
+        val openDialog = remember { mutableStateOf(false) }
+        if (openDialog.value) {
+            ShowAlertDialog(
+                title = stringResource(id = R.string.alert_dialog_text),
+                body = stringResource(id = R.string.action),
+                openDialog = openDialog
+            ) {
+                FirebaseFirestore
+                    .getInstance()
+                    .collection("books")
+                    .document(book.id!!)
+                    .delete()
+                    .addOnCompleteListener {
+                        if(it.isSuccessful){
+                            openDialog.value = false
+                            navController.navigate(ReaderScreens.HomeScreen.name)
+                        }
+                    }
+                    .addOnFailureListener {
+
+                    }
+            }
+        }
+
         RoundedButton(
             label = "Delete"
+        ) {
+            openDialog.value = true
+        }
+    }
+}
+
+@Composable
+fun ShowAlertDialog(
+    title: String,
+    body: String,
+    openDialog: MutableState<Boolean>,
+    onYesPressed: () -> Unit
+) {
+    if (openDialog.value) {
+        AlertDialog(
+            onDismissRequest = { openDialog.value = false },
+            title = {
+                Text(text = "Delete Book")
+            },
+            text = {
+               Column{
+                   Text(text  = title)
+                   Text(text  = body)
+               }
+            },
+            buttons = {
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    TextButton(
+                        onClick = {
+                            onYesPressed.invoke()
+                        }
+                    ){
+                        Text(text = "Yes")
+                    }
+                    TextButton(
+                        onClick = {
+                            openDialog.value = false
+                        }
+                    ){
+                        Text(text = "No")
+                    }
+                }
+            }
         )
     }
 }
+
 
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalComposeUiApi::class)
