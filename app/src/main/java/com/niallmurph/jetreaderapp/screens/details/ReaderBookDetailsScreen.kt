@@ -184,7 +184,7 @@ fun saveToFirebase(book: MBook,navController: NavController) {
                     .update(hashMapOf("id" to docId) as HashMap<String, Any>)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            navController.popBackStack()
+                            navController.navigate(ReaderScreens.HomeScreen.name)
                         }
                     }
             }.addOnFailureListener {
