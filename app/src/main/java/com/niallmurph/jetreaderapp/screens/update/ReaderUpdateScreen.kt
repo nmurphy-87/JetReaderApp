@@ -1,9 +1,7 @@
 package com.niallmurph.jetreaderapp.screens.update
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +31,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import com.niallmurph.jetreaderapp.R
 import com.niallmurph.jetreaderapp.components.NotesInputField
 import com.niallmurph.jetreaderapp.components.RatingBar
