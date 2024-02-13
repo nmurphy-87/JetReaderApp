@@ -44,7 +44,8 @@ fun ReaderNavigation() {
         }
 
         composable(ReaderScreens.StatsScreen.name) {
-            StatsScreen(navController = navController)
+            val homeViewModel = hiltViewModel<HomeScreenViewModel>()
+            StatsScreen(navController = navController, viewModel = homeViewModel)
         }
 
         val detailName = ReaderScreens.DetailsScreen.name
